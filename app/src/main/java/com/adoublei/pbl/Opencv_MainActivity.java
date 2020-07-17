@@ -39,7 +39,7 @@ public class Opencv_MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) { //album에서 사진 선택 및 가져오기 성공하면 requestCode가 1
+        if (requestCode == 1) { //album에서 사진 선택 및 가져오기 성공하면 requestCode == 1
             if (resultCode == RESULT_OK) {
                 try {
                     InputStream in = getContentResolver().openInputStream(data.getData());
