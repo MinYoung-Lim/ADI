@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "30480418058",
+    "firebase_url": "https://adoublei.firebaseio.com",
+    "project_id": "adoublei",
+    "storage_bucket": "adoublei.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30480418058:android:0da7faf516e51c60ae26f3",
+        "android_client_info": {
+          "package_name": "com.adoublei.pbl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30480418058-42phr3l93tjfp825tqqoehn000srv0f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adoublei.pbl",
+            "certificate_hash": "639077277f036c90110fb21ffdbcbb1196d543de"
+          }
+        },
+        {
+          "client_id": "30480418058-g99ussr7s316okd4tq5p4jajf40hmosu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMuWtemDkaOPtJMu99AbCqk6oQzaI-3zM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30480418058-g99ussr7s316okd4tq5p4jajf40hmosu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
