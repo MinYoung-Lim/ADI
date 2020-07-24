@@ -16,6 +16,7 @@ public class Opencv_MainActivity extends AppCompatActivity {
 
     ImageView gallery_img;
     Button gallery_btn;
+    Button btn_mlkit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,15 @@ public class Opencv_MainActivity extends AppCompatActivity {
 
         gallery_btn = findViewById(R.id.btn_gallery); //gallery button
         gallery_img = findViewById(R.id.img_gallery); //imageView
+        btn_mlkit = findViewById(R.id.btn_mlkit);
+
+        btn_mlkit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MLkitActivity2.class);
+                startActivity(intent);
+            }
+        });
 
         gallery_btn.setOnClickListener(new View.OnClickListener(){ // gallery button 클릭 시 album으로 이동
             public void onClick(View view){
