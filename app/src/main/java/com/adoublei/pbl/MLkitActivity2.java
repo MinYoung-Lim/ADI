@@ -1,49 +1,43 @@
 package com.adoublei.pbl;
 
 
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.ml.common.FirebaseMLException;
 import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.automl.FirebaseAutoMLLocalModel;
 import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions;
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
+import com.google.firebase.ml.vision.label.FirebaseVisionOnDeviceAutoMLImageLabelerOptions;
 
 //import devrel.firebase.google.com.firebaseoptions.BuildConfig;
 
 public class MLkitActivity2 extends AppCompatActivity {
 
-    public void buildCloudVisionOptions() {
-        // [START ml_build_cloud_vision_options]
-        FirebaseVisionCloudDetectorOptions options =
-                new FirebaseVisionCloudDetectorOptions.Builder()
-                        .setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
-                        .setMaxResults(15)
-                        .build();
-        // [END ml_build_cloud_vision_options]
-    }
+    public void MakeLabeler(){
 
-    public void enforceCertificateMatching() {
-        // Dummy variable
-        FirebaseVisionImage myImage = FirebaseVisionImage.fromByteArray(new byte[]{},
-                new FirebaseVisionImageMetadata.Builder().build());
+        // Firebase 호스팅 모델 소스 구성
+        FirebaseAutoMLLocalModel localModel = new FirebaseAutoMLLocalModel.Builder()
+                .setAssetFilePath("manifest.json")
+                .build();
 
-        // [START mlkit_certificate_matching]
-        FirebaseVisionCloudImageLabelerOptions.Builder optionsBuilder =
-                new FirebaseVisionCloudImageLabelerOptions.Builder();
-        if (!BuildConfig.DEBUG) {
-            // Requires physical, non-rooted device:
-            optionsBuilder.enforceCertFingerprintMatch();
+        // 라벨러 지정
+        FirebaseVisionImageLabeler labeler;
+        try {
+            FirebaseVisionOnDeviceAutoMLImageLabelerOptions options =
+                    new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(localModel)
+                            .setConfidenceThreshold(0.0f)  // Evaluate your model in the Firebase console
+                            // to determine an appropriate value.
+                            .build();
+            labeler = FirebaseVision.getInstance().getOnDeviceAutoMLImageLabeler(options);
+        } catch (FirebaseMLException e) {
+            e.printStackTrace();
         }
-
-        // Set other options. For example:
-        optionsBuilder.setConfidenceThreshold(0.8f);
-        // ...
-
-        // And lastly:
-        FirebaseVisionCloudImageLabelerOptions options = optionsBuilder.build();
-        FirebaseVision.getInstance().getCloudImageLabeler(options).processImage(myImage);
-        // [END mlkit_certificate_matching]
     }
 
 }
