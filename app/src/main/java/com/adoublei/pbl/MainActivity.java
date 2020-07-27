@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         btn_opencv.setOnClickListener(new View.OnClickListener() {  // OpenCV화면으로 이동
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Opencv_MainActivity.class);
+                Intent intent = new Intent(MainActivity.this, OpenCV_MainActivity3.class);
                 startActivity(intent);
             }
         });

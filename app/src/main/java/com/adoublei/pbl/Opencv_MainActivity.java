@@ -15,12 +15,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.automl.FirebaseAutoMLLocalModel;
+import com.google.firebase.ml.vision.automl.FirebaseAutoMLRemoteModel;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
@@ -42,6 +47,8 @@ public class Opencv_MainActivity extends AppCompatActivity {
     public FirebaseVisionOnDeviceAutoMLImageLabelerOptions options;
     public FirebaseVisionImageLabeler labeler;
     public FirebaseAutoMLLocalModel localModel;
+    public FirebaseAutoMLRemoteModel remoteModel;
+    public FirebaseModelDownloadConditions conditions;
     public String text;
 
     @Override
@@ -90,8 +97,10 @@ public class Opencv_MainActivity extends AppCompatActivity {
                     gallery_img.setImageBitmap(img); //gallery_img에 사진 업로드*/
 
 
+                FirebaseApp.initializeApp(getApplicationContext());
 
-
+                    MakeRemoteModel();
+                    MakeLocalModel();
                     MakeLabeler();
 
                     // 입력 이미지 준비
@@ -136,32 +145,63 @@ public class Opencv_MainActivity extends AppCompatActivity {
         }
     }
 
-    public void MakeLabeler(){
+    public void MakeRemoteModel(){
 
-        FirebaseApp.initializeApp(getApplicationContext());
+        //Firebase 호스팅(원격) 모델 소스 구성
+        remoteModel = new FirebaseAutoMLRemoteModel.Builder("sample2").build();
+        conditions = new FirebaseModelDownloadConditions.Builder()
+                .requireWifi()
+                .build();
 
-        // Firebase 호스팅 모델 소스 구성
+        FirebaseModelManager.getInstance().download(remoteModel, conditions)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Success.
+                        Log.e("원격 모델 소스 구성", "성공");
+                    }
+                });
+
+    }
+
+    public void MakeLocalModel(){
+
+        // 로컬 모델 소스 구성
         localModel = new FirebaseAutoMLLocalModel.Builder()
                 .setAssetFilePath("manifest.json")
                 .build();
 
-        // 라벨러 지정
-        try {
-            Log.e("라벨러지정", "실행됨");
 
-                    options =
-                    new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(localModel)
-                            .setConfidenceThreshold(0.0f)  // Evaluate your model in the Firebase console
-                            // to determine an appropriate value.
-                            .build();
-            Log.e("라벨러지정", "실행됨2");
+    }
 
-            labeler = FirebaseVision.getInstance().getOnDeviceAutoMLImageLabeler(options);
-            Log.e("라벨러지정", "실행됨3");
+    public void MakeLabeler(){
 
-        } catch (FirebaseMLException e) {
-            e.printStackTrace();
-        }
+        // firebase 초기화
+        //FirebaseApp.initializeApp(getApplicationContext());
+
+
+        FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
+                .addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean isDownloaded) {
+                        FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder optionsBuilder;
+                        if (isDownloaded) {
+                            optionsBuilder = new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(remoteModel);
+                        } else {
+                            optionsBuilder = new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(localModel);
+                        }
+                        FirebaseVisionOnDeviceAutoMLImageLabelerOptions options = optionsBuilder
+                                .setConfidenceThreshold(0.0f)  // Evaluate your model in the Firebase console
+                                // to determine an appropriate threshold.
+                                .build();
+
+                        try {
+                            labeler = FirebaseVision.getInstance().getOnDeviceAutoMLImageLabeler(options);
+                        } catch (FirebaseMLException e) {
+                            // Error.
+                        }
+                    }
+                });
     }
 
 }

@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CustomModelActivity"></activity>
+        <activity android:name=".OpenCV_MainActivity3"></activity>
+        <activity android:name=".OpenCV_MainActivity2" />
+        <activity android:name=".CustomModelActivity" />
         <activity android:name=".Encrypt_MainActivity" />
         <activity android:name=".ImageLabellingActivity" />
         <activity android:name=".MLkitActivity2" />
@@ -26,5 +28,8 @@
             </intent-filter>
         </activity>
     </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 </manifest>
