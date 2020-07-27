@@ -9,7 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Encrypt_MainActivity"></activity>
+        <activity android:name=".CustomModelActivity"></activity>
+        <activity android:name=".Encrypt_MainActivity" />
+        <activity android:name=".ImageLabellingActivity" />
+        <activity android:name=".MLkitActivity2" />
+        <activity android:name=".MLkitActivity" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
         <activity android:name=".Opencv_MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
