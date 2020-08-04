@@ -8,18 +8,79 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:30480418058:android:a510237aaf333a3dae26f3",
+        "mobilesdk_app_id": "1:30480418058:android:0da7faf516e51c60ae26f3",
         "android_client_info": {
           "package_name": "com.adoublei.pbl"
         }
       },
       "oauth_client": [
         {
+          "client_id": "30480418058-02bi09o273dtbjlakrgm1s2mvfb9ao9c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adoublei.pbl",
+            "certificate_hash": "2311d4d97fd1660edbcef48f497d7533587dd206"
+          }
+        },
+        {
+          "client_id": "30480418058-qvqu5von09ltnbvenula6vr215ktl41q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adoublei.pbl",
+            "certificate_hash": "c24e3efeffc2cf49f7d76c704322a4d688341c62"
+          }
+        },
+        {
           "client_id": "30480418058-42phr3l93tjfp825tqqoehn000srv0f8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.adoublei.pbl",
             "certificate_hash": "639077277f036c90110fb21ffdbcbb1196d543de"
+          }
+        },
+        {
+          "client_id": "30480418058-g99ussr7s316okd4tq5p4jajf40hmosu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMuWtemDkaOPtJMu99AbCqk6oQzaI-3zM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30480418058-g99ussr7s316okd4tq5p4jajf40hmosu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30480418058:android:4870ed7aa93313ffae26f3",
+        "android_client_info": {
+          "package_name": "com.example.pbll"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30480418058-covpp5ppk2c7rsv6vpo4q34qdu2ul56h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbll",
+            "certificate_hash": "2311d4d97fd1660edbcef48f497d7533587dd206"
+          }
+        },
+        {
+          "client_id": "30480418058-fia2i5qomikobq8enismohp9cak6jdv8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pbll",
+            "certificate_hash": "c24e3efeffc2cf49f7d76c704322a4d688341c62"
           }
         },
         {

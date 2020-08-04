@@ -2,17 +2,19 @@ package com.adoublei.pbl;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,31 +32,37 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
 import com.google.firebase.ml.vision.label.FirebaseVisionOnDeviceAutoMLImageLabelerOptions;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.label.ImageLabel;
+import com.google.mlkit.vision.label.ImageLabeler;
+import com.google.mlkit.vision.label.ImageLabeling;
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel;
+import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
-public class Opencv_MainActivity extends AppCompatActivity {
+public class OpenCV_MainActivity3 extends AppCompatActivity {
 
     public float confidence;
-    public FirebaseVisionImage image;
+    public InputImage image;
     private final int GET_GALLERY_IMAGE = 200;
     ImageView gallery_img;
     Button gallery_btn;
     Button btn_mlkit;
     TextView tv_label;
     public FirebaseVisionOnDeviceAutoMLImageLabelerOptions options;
-    public FirebaseVisionImageLabeler labeler;
-    public FirebaseAutoMLLocalModel localModel;
+    public ImageLabeler labeler;
+    public AutoMLImageLabelerLocalModel localModel;
     public FirebaseAutoMLRemoteModel remoteModel;
     public FirebaseModelDownloadConditions conditions;
     public String text;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_opencv__main);
+        setContentView(R.layout.activity_open_c_v__main3);
 
         gallery_btn = findViewById(R.id.btn_gallery); //gallery button
         gallery_img = findViewById(R.id.img_gallery); //imageView
@@ -76,8 +84,8 @@ public class Opencv_MainActivity extends AppCompatActivity {
             }
         });
 
-    }
 
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,7 +97,7 @@ public class Opencv_MainActivity extends AppCompatActivity {
 
             try {
 
-                    Log.e("onActivityResult", "실행됨");
+                Log.e("onActivityResult", "실행됨");
 
                     /*InputStream in = getContentResolver().openInputStream(data.getData());
                     Bitmap img = BitmapFactory.decodeStream(in);
@@ -97,50 +105,51 @@ public class Opencv_MainActivity extends AppCompatActivity {
                     gallery_img.setImageBitmap(img); //gallery_img에 사진 업로드*/
 
 
-                FirebaseApp.initializeApp(getApplicationContext());
 
-                    MakeRemoteModel();
-                    MakeLocalModel();
-                    MakeLabeler();
+                MakeLocalModel();
+                MakeLabeler();
 
-                    // 입력 이미지 준비
-                    try {
-                        Log.e("입력 이미지 준비", "실행됨");
-                        image = FirebaseVisionImage.fromFilePath(getApplicationContext(), selectedImageUri);
-                    } catch (IOException e) {
-                        Log.e("입력이미지준비", "실행안됨");
-                        e.printStackTrace();
-                    }
-
-                    // 이미지 레이블러 실행
-                    labeler.processImage(image)
-                            .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
-                                @Override
-                                public void onSuccess(List<FirebaseVisionImageLabel> labels) {
-                                    Log.e("이미지레이블러실행","실행됨");
-                                    for (FirebaseVisionImageLabel label: labels) {
-                                        Log.e("Opencv_MainActivity", String.valueOf(labels));
-                                        text = label.getText();
-                                        confidence = label.getConfidence();
-                                    }
-
-                                    tv_label.setText((int) confidence);
-
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("이미지레이블러실행","실행안됨");
-                                    e.printStackTrace();
-                                }
-                            });
-
-
-
-                } catch (Exception e) { //오류 처리
+                // 입력 이미지 준비
+                try {
+                    Log.e("입력 이미지 준비", "실행됨");
+                    image = InputImage.fromFilePath (getApplicationContext(), selectedImageUri);
+                } catch (IOException e) {
+                    Log.e("입력이미지준비", "실행안됨");
                     e.printStackTrace();
                 }
+
+                // 이미지 레이블러 실행
+                labeler.process(image)
+                        .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                            @Override
+                            public void onSuccess(List<ImageLabel> labels) {
+                                // Task completed successfully
+                                // ...
+                                Log.e("라벨러","성공");
+                                for (ImageLabel label : labels) {
+                                    text = label.getText();
+                                    float confidence = label.getConfidence();
+                                    int index = label.getIndex();
+                                }
+                                tv_label.setText(text);
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Task failed with an exception
+                                // ...
+                                Log.e("라벨러","실패");
+
+                            }
+                        });
+
+
+
+            } catch (Exception e) { //오류 처리
+                e.printStackTrace();
+            }
 
         }
     }
@@ -167,9 +176,12 @@ public class Opencv_MainActivity extends AppCompatActivity {
     public void MakeLocalModel(){
 
         // 로컬 모델 소스 구성
-        localModel = new FirebaseAutoMLLocalModel.Builder()
-                .setAssetFilePath("manifest.json")
-                .build();
+        localModel =
+                new AutoMLImageLabelerLocalModel.Builder()
+                        //.setAbsoluteFilePath("")
+                        .setAssetFilePath("mlkit/manifest.json")
+                        // or .setAbsoluteFilePath(absolute file path to manifest file)
+                        .build();
 
 
     }
@@ -179,29 +191,16 @@ public class Opencv_MainActivity extends AppCompatActivity {
         // firebase 초기화
         //FirebaseApp.initializeApp(getApplicationContext());
 
+        AutoMLImageLabelerOptions autoMLImageLabelerOptions =
+                new AutoMLImageLabelerOptions.Builder(localModel)
+                        .setConfidenceThreshold(0.5f)  // Evaluate your model in the Firebase console
+                        // to determine an appropriate value.
+                        .build();
+        labeler = ImageLabeling.getClient(autoMLImageLabelerOptions);
 
-        FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
-                .addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean isDownloaded) {
-                        FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder optionsBuilder;
-                        if (isDownloaded) {
-                            optionsBuilder = new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(remoteModel);
-                        } else {
-                            optionsBuilder = new FirebaseVisionOnDeviceAutoMLImageLabelerOptions.Builder(localModel);
-                        }
-                        FirebaseVisionOnDeviceAutoMLImageLabelerOptions options = optionsBuilder
-                                .setConfidenceThreshold(0.0f)  // Evaluate your model in the Firebase console
-                                // to determine an appropriate threshold.
-                                .build();
 
-                        try {
-                            labeler = FirebaseVision.getInstance().getOnDeviceAutoMLImageLabeler(options);
-                        } catch (FirebaseMLException e) {
-                            // Error.
-                        }
-                    }
-                });
     }
 
+
 }
+
