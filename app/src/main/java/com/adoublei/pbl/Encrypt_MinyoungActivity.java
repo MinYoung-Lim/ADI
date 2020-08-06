@@ -114,15 +114,18 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
                 //Log.e("String압축", shortEncryptImg);
 
                 String EncryptImg1 = EncryptImg.substring(0, 2000);
-                String EncryptImg2 = EncryptImg.substring(2000, EncryptImg.length()-1);
+                String EncryptImg2 = EncryptImg.substring(2000);
 
                 Log.e("EncryptImg1", EncryptImg1);
+                Log.e("EncryptImg2", EncryptImg2);
 
                 // 암호화된 이미지 업로드
                 DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef = mRootRef.child("암호화된 이미지4");
+                DatabaseReference conditionRef = mRootRef.child("암호화된 이미지4-1");
+                conditionRef.setValue(EncryptImg1);
 
-                conditionRef.setValue(EncryptImg1.concat(EncryptImg2));
+                DatabaseReference conditionRef2 = mRootRef.child("암호화된 이미지4-2");
+                conditionRef2.setValue(EncryptImg2);
 
                 //Bitmap StringToBitmap = StringToBitmap(bitmapToString);
 
