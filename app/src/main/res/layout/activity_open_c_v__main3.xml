@@ -18,10 +18,10 @@
             android:textSize="50sp" />
 
         <Button
-            android:id="@+id/btn_mlkit"
+            android:id="@+id/btn_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="mlkit 연습"/>
+            android:text="scan"/>
 
         <Button
             android:id="@+id/btn_gallery"

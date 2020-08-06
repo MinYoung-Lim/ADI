@@ -8,8 +8,11 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.adoublei.pbl.helpers.MyConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,7 +43,9 @@ import com.google.mlkit.vision.label.ImageLabeling;
 import com.google.mlkit.vision.label.automl.AutoMLImageLabelerLocalModel;
 import com.google.mlkit.vision.label.automl.AutoMLImageLabelerOptions;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class OpenCV_MainActivity3 extends AppCompatActivity {
@@ -49,7 +55,7 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
     private final int GET_GALLERY_IMAGE = 200;
     ImageView gallery_img;
     Button gallery_btn;
-    Button btn_mlkit;
+    Button btn_scan;
     TextView tv_label;
     public FirebaseVisionOnDeviceAutoMLImageLabelerOptions options;
     public ImageLabeler labeler;
@@ -57,6 +63,8 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
     public FirebaseAutoMLRemoteModel remoteModel;
     public FirebaseModelDownloadConditions conditions;
     public String text;
+    private Uri selectedImageUri;
+    private Bitmap bitmap;
 
 
     @Override
@@ -68,13 +76,19 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
         gallery_img = findViewById(R.id.img_gallery); //imageView
         tv_label = findViewById(R.id.tv_label);
 
-        /*btn_mlkit.setOnClickListener(new View.OnClickListener() {
+        btn_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MLkitActivity2.class);
-                startActivity(intent);
+
+                // bitmap 변환
+                convertToBitmap();
+
+                MyConstants.selectedImageBitmap = bitmap;
+//                //Intent intent = new Intent(getApplicationContext(), ImageCropActivity.class);
+              //  startActivity(intent);
+
             }
-        });*/
+        });
 
         gallery_btn.setOnClickListener(new View.OnClickListener(){ // gallery button 클릭 시 album으로 이동
             public void onClick(View view){
@@ -86,14 +100,41 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
 
 
     }
+
+    private void convertToBitmap() {
+        bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), selectedImageUri);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void loadImage() {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(this.selectedImageUri);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            gallery_img.setImageBitmap(bitmap);
+            //btnImageProcess.setVisibility(View.VISIBLE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
 
         if (requestCode == GET_GALLERY_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) { //album에서 사진 선택 및 가져오기 성공하면 requestCode가 1
-            Uri selectedImageUri = data.getData();
+            selectedImageUri = data.getData();
             gallery_img.setImageURI(selectedImageUri);
+
+            this.loadImage();
 
             try {
 

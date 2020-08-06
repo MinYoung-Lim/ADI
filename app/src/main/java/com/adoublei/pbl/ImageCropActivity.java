@@ -1,4 +1,4 @@
-package com.adoublei.pbl;
+/*package com.adoublei.pbl;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.adoublei.pbl.libraries.PolygonView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,9 +27,9 @@ import java.util.Map;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 
-import id.aashari.code.camerascanner.helpers.MyConstants;
-import id.aashari.code.camerascanner.libraries.NativeClass;
-import id.aashari.code.camerascanner.libraries.PolygonView;
+import com.adoublei.pbl.helpers.MyConstants;
+import com.adoublei.pbl.libraries.NativeClass;
+import com.adoublei.pbl.libraries.PolygonView;
 
     public class ImageCropActivity extends Activity {
 
@@ -173,3 +175,4 @@ import id.aashari.code.camerascanner.libraries.PolygonView;
 
     }
 }
+*/

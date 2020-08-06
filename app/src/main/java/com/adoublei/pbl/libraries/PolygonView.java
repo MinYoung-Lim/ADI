@@ -1,5 +1,5 @@
 package com.adoublei.pbl.libraries;
-
+/*
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -21,6 +21,7 @@ import id.aashari.code.camerascanner.R;
 /**
  * Created by jhansi on 28/03/15.
  */
+/*
 public class PolygonView extends FrameLayout {
 
     protected Context context;
@@ -295,4 +296,4 @@ public class PolygonView extends FrameLayout {
     }
 
 
-}
+}*/

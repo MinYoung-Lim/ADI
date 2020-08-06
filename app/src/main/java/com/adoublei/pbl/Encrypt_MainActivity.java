@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +25,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,7 +42,9 @@ public class Encrypt_MainActivity extends AppCompatActivity {
 
     private Button btChoose;
     private Button btUpload;
+    private Button btn_min;
     private ImageView ivPreview;
+
 
     private Uri filePath;
 
@@ -43,9 +55,22 @@ public class Encrypt_MainActivity extends AppCompatActivity {
 
         btChoose = (Button) findViewById(R.id.bt_choose);
         btUpload = (Button) findViewById(R.id.bt_upload);
+        btn_min = (Button)findViewById(R.id.btn_min);
         ivPreview = (ImageView) findViewById(R.id.iv_preview);
 
+
         //버튼 클릭 이벤트
+
+        btn_min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Encrypt_MainActivity.this, Encrypt_MinyoungActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
         btChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +91,7 @@ public class Encrypt_MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     //결과 처리
     @Override
