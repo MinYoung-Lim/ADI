@@ -65,7 +65,7 @@ public class Encrypt_MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(Encrypt_MainActivity.this, Encrypt_MinyoungActivity.class);
+                Intent intent = new Intent(Encrypt_MainActivity.this, Encrypt_MinyoungActivity2.class);
                 startActivity(intent);
 
             }

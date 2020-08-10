@@ -34,8 +34,13 @@ import java.util.zip.InflaterInputStream;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
-public class Encrypt_MinyoungActivity extends AppCompatActivity {
+
+
+public class Encrypt_MinyoungActivity2 extends AppCompatActivity {
 
     private Button btn_send;
     private Button btn_gallery;
@@ -46,7 +51,6 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
 
     private String EncryptImg="";
     private String DecryptImg="";
-    private String str;
     private String bitmapToString="";
     private Bitmap stringToBitmap;
     private static final String charsetName = "UTF-8";
@@ -55,7 +59,7 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_encrypt__minyoung);
+        setContentView(R.layout.activity_encrypt__minyoung2);
 
         btn_send = findViewById(R.id.btn_send);
         btn_gallery = findViewById(R.id.btn_gallery);
@@ -118,30 +122,49 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
                 bitmapToString = BitmapToString(ImgBitmap);
                 ImgBitmap.recycle();
 
-                String key="123456789101112141313";
-                AES256Util aes = new AES256Util(key);
-
-                // 이미지 암호화
-                EncryptImg = aes.aesEncode(bitmapToString);
-                Log.e("암호화된이미지", EncryptImg);
+                // 키 설정
+                final String secretKey = "love";
+                String originalString = bitmapToString;
 
                 // 암호화 체크
-                String testEncrypt = aes.aesEncode("hello123");
+                /*String testEncrypt = Cryptor.encrypt(originalString, secretKey);
                 DatabaseReference mRootRef5 = FirebaseDatabase.getInstance().getReference();
                 DatabaseReference conditionRef5 = mRootRef5.child("암호문");
                 conditionRef5.setValue(testEncrypt);
-                Log.e("암호문", testEncrypt);
+                Log.e("암호문", testEncrypt);*/
+
+                // 이미지 암호화
+                EncryptImg = Cryptor.encrypt(originalString, secretKey);
+                Log.e("암호화된이미지", EncryptImg);
+
+                // 암호화된 이미지 업로드
+                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference conditionRef = mRootRef.child("암호화된 이미지6");
+                conditionRef.setValue(EncryptImg);
+
+                // 복호화
+                DecryptImg = Cryptor.decrypt(EncryptImg, secretKey);
+                stringToBitmap = StringToBitmap(DecryptImg);
+                iv_bitmap.setImageBitmap(stringToBitmap);
+
+                Log.e("복호화된이미지", DecryptImg);
+
+
+                // 복호화된 이미지 업로드
+                DatabaseReference mRootRef2 = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference conditionRef2 = mRootRef2.child("복호화된 이미지5");
+                conditionRef2.setValue(DecryptImg);
 
                 // 복호화 체크
-                String testDecrypt = aes.aesDecode(testEncrypt);
+                /*String testDecrypt = Cryptor.decrypt(testEncrypt, secretKey);
                 DatabaseReference mRootRef6 = FirebaseDatabase.getInstance().getReference();
                 DatabaseReference conditionRef6 = mRootRef6.child("복호문");
                 conditionRef6.setValue(testDecrypt);
-                Log.e("복호문", testDecrypt);
+                Log.e("복호문", testDecrypt);*/
 
-               // DecryptImg = AES256Chiper.Decrypt(EncryptImg, "123456789");
-               // Bitmap decryptBitmap = StringToBitmap(DecryptImg);
-              //  iv_bitmap.setImageBitmap(decryptBitmap);
+                // DecryptImg = AES256Chiper.Decrypt(EncryptImg, "123456789");
+                // Bitmap decryptBitmap = StringToBitmap(DecryptImg);
+                //  iv_bitmap.setImageBitmap(decryptBitmap);
 
                 // String 압축
                 //String shortEncryptImg = compressString(EncryptImg);
@@ -155,24 +178,18 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
                 //Log.e("EncryptImg2", EncryptImg);
 
                 // 암호화된 이미지 업로드
-                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef = mRootRef.child("암호화된 이미지6");
-                conditionRef.setValue(EncryptImg);
+               // DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                //DatabaseReference conditionRef = mRootRef.child("암호화된 이미지6");
+                //conditionRef.setValue(EncryptImg);
 
-                EncryptImg="";
+                //EncryptImg="";
 
-                // 복호화
-                DecryptImg = aes.aesDecode(EncryptImg);
-                stringToBitmap = StringToBitmap(DecryptImg);
-                iv_bitmap.setImageBitmap(stringToBitmap);
-
-                Log.e("복호화된이미지", DecryptImg);
 
 
                 // 복호화된 이미지 업로드
-                DatabaseReference mRootRef2 = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef2 = mRootRef2.child("복호화된 이미지5");
-                conditionRef2.setValue(DecryptImg);
+              //  DatabaseReference mRootRef2 = FirebaseDatabase.getInstance().getReference();
+              //  DatabaseReference conditionRef2 = mRootRef2.child("복호화된 이미지5");
+               // conditionRef2.setValue(DecryptImg);
 
 
                 //Bitmap StringToBitmap = StringToBitmap(bitmapToString);
@@ -182,13 +199,15 @@ public class Encrypt_MinyoungActivity extends AppCompatActivity {
                 //Log.e("bitmap변환", bitmapToString);
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+
     }
+
+
 
     /*
      * String형을 BitMap으로 변환시켜주는 함수
