@@ -1,10 +1,9 @@
-/*package com.adoublei.pbl;
+package com.adoublei.pbl;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,7 +30,9 @@ import com.adoublei.pbl.helpers.MyConstants;
 import com.adoublei.pbl.libraries.NativeClass;
 import com.adoublei.pbl.libraries.PolygonView;
 
-    public class ImageCropActivity extends Activity {
+import static com.adoublei.pbl.OpenCV_MainActivity3.selectedBitmap;
+
+public class ImageCropActivity extends Activity {
 
         FrameLayout holderImageCrop;
         ImageView imageView;
@@ -67,8 +68,8 @@ import com.adoublei.pbl.libraries.PolygonView;
 
         private void initializeCropping() {
 
-            selectedImageBitmap = MyConstants.selectedImageBitmap;
-            MyConstants.selectedImageBitmap = null;
+            selectedImageBitmap = selectedBitmap;
+            selectedBitmap = null;
 
             Bitmap scaledBitmap = scaledBitmap(selectedImageBitmap, holderImageCrop.getWidth(), holderImageCrop.getHeight());
             imageView.setImageBitmap(scaledBitmap);
@@ -174,5 +175,4 @@ import com.adoublei.pbl.libraries.PolygonView;
         }
 
     }
-}
-*/
+

@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.adoublei.pbl.helpers.MyConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +54,7 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
     ImageView gallery_img;
     Button gallery_btn;
     Button btn_scan;
+    Button btn_mlkit;
     TextView tv_label;
     public FirebaseVisionOnDeviceAutoMLImageLabelerOptions options;
     public ImageLabeler labeler;
@@ -64,7 +63,7 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
     public FirebaseModelDownloadConditions conditions;
     public String text;
     private Uri selectedImageUri;
-    private Bitmap bitmap;
+    public static Bitmap selectedBitmap;
 
 
     @Override
@@ -75,17 +74,23 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
         gallery_btn = findViewById(R.id.btn_gallery); //gallery button
         gallery_img = findViewById(R.id.img_gallery); //imageView
         tv_label = findViewById(R.id.tv_label);
+        btn_scan = findViewById(R.id.btn_scan);
+
+        /*btn_mlkit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MLkitActivity2.class);
+                startActivity(intent);
+            }
+        });*/
 
         btn_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // bitmap 변환
-                convertToBitmap();
-
-                MyConstants.selectedImageBitmap = bitmap;
-//                //Intent intent = new Intent(getApplicationContext(), ImageCropActivity.class);
-              //  startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), ScanActivity6.class);
+                //intent.putExtra("bitmap", (Bitmap)selectedBitmap);
+                startActivity(intent);
 
             }
         });
@@ -95,36 +100,13 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                 startActivityForResult(intent, GET_GALLERY_IMAGE);
+
+
             }
         });
 
 
     }
-
-    private void convertToBitmap() {
-        bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), selectedImageUri);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    private void loadImage() {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(this.selectedImageUri);
-            bitmap = BitmapFactory.decodeStream(inputStream);
-            gallery_img.setImageBitmap(bitmap);
-            //btnImageProcess.setVisibility(View.VISIBLE);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,7 +116,15 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
             selectedImageUri = data.getData();
             gallery_img.setImageURI(selectedImageUri);
 
-            this.loadImage();
+           // Uri를 Bitmap으로 변환
+            InputStream inputStream = null;
+            try {
+                inputStream = getContentResolver().openInputStream(selectedImageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            selectedBitmap = BitmapFactory.decodeStream(inputStream);
 
             try {
 
@@ -244,4 +234,3 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
 
 
 }
-

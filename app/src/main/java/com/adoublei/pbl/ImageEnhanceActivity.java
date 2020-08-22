@@ -1,15 +1,16 @@
 package com.adoublei.pbl;
 
-/*
+
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import id.aashari.code.camerascanner.helpers.MyConstants;
-import id.aashari.code.camerascanner.libraries.NativeClass;
+import com.adoublei.pbl.helpers.MyConstants;
+import com.adoublei.pbl.libraries.NativeClass;
 
 public class ImageEnhanceActivity extends AppCompatActivity {
 
@@ -80,4 +81,4 @@ public class ImageEnhanceActivity extends AppCompatActivity {
     };
 
 
-}*/
+}

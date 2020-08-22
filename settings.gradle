@@ -1,3 +1,4 @@
+include ':ndklib'
 include ':sdk'
 include ':app'
 rootProject.name = "pbl"
