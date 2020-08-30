@@ -88,7 +88,7 @@ public class OpenCV_MainActivity3 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getApplicationContext(), ScanActivity6.class);
+                Intent intent = new Intent(getApplicationContext(), ScanActivity7.class);
                 //intent.putExtra("bitmap", (Bitmap)selectedBitmap);
                 startActivity(intent);
 

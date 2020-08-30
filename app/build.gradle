@@ -20,8 +20,40 @@ android {
         }
     }
 
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a' //select ABIs to build APKs for
+            universalApk true //generate an additional APK that contains all the ABIs
+        }
+    }
+
+    project.ext.versionCodes = ['armeabi': 1, 'armeabi-v7a': 2, 'arm64-v8a': 3, 'mips': 5, 'mips64': 6, 'x86': 8, 'x86_64': 9]
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) * 1000000 + android.defaultConfig.versionCode
+        }
+    }
+
+    //ndkVersion "21.0.6113669"
+
     aaptOptions{
         noCompress "tflite"
+    }
+
+    externalNativeBuild {
+
+        ndkBuild {
+
+            path 'src/main/jni/Android.mk'
+
+        }
+
+
+
     }
 
 }
@@ -39,9 +71,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-database:16.0.4'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation project(path: ':sdk')
-    implementation project(path: ':ndklib')
-    implementation project(path: ':ndklib')
+    implementation project(path: ':openCVLibrary3410')
+    //implementation project(path: ':ndklib')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -54,6 +85,8 @@ dependencies {
 android {
     packagingOptions {
         exclude 'META-INF/proguard/androidx-annotations.pro'
+
+
     }
 }
 
