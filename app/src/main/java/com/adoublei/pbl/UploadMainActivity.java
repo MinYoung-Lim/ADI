@@ -1,14 +1,17 @@
 package com.adoublei.pbl;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -25,68 +28,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
+public class UploadMainActivity extends AppCompatActivity {
 
-
-public class Encrypt_MinyoungActivity2 extends AppCompatActivity {
-
-    private Button btn_send;
-    private Button btn_gallery;
-    private ImageView iv_bitmap;
-    private String text;
-    public String encryptText2;
-    private Uri filePath;
+    Button btn_upload;
+    ImageView iv_bitmap;
 
     private String EncryptImg="";
     private String DecryptImg="";
     private String bitmapToString="";
     private Bitmap stringToBitmap;
+    private String text;
+    public String encryptText2;
+    private Uri filePath;
     private static final String charsetName = "UTF-8";
-    private String useruuid = null;
-
+    private String userEamil = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_encrypt__minyoung2);
+        setContentView(R.layout.activity_upload_main);
 
-        btn_send = findViewById(R.id.btn_send);
-        btn_gallery = findViewById(R.id.btn_gallery);
+        btn_upload = findViewById(R.id.btn_upload);
         iv_bitmap = findViewById(R.id.iv_bitmap);
 
-
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                text = "이것은 비밀 메시지";
-                try {
-                    encryptText2 = AES256Chiper.Encrypt(text, "key");
-                    Log.e("암호화메시지", encryptText2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef = mRootRef.child("암호화메시지3");
-                conditionRef.setValue(encryptText2);
-            }
-        });
-
-
-        btn_gallery.setOnClickListener(new View.OnClickListener() {
+        btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //이미지를 선택
@@ -94,12 +64,8 @@ public class Encrypt_MinyoungActivity2 extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요."), 0);
-
-
-
             }
         });
-
 
     }
 
@@ -112,38 +78,46 @@ public class Encrypt_MinyoungActivity2 extends AppCompatActivity {
             filePath = data.getData();
             try {
 
-                // Uri파일로 bitmap resize
-                //resize(getApplicationContext(), filePath, 1000);
-
                 Bitmap ImgBitmap = null;
 
-                //ImgBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 ImgBitmap = resize(getApplicationContext(), filePath, 1000);
 
                 bitmapToString = BitmapToString(ImgBitmap);
                 ImgBitmap.recycle();
 
-                // 키 설정
+                // 키 생성 (추후에 작성해야함)
+
+
+                // 키 설정 ( 이부분도 나중에 키생성 어떻게할지 정해서 다시 코딩해야함)
                 final String secretKey = "love";
                 String originalString = bitmapToString;
-
-                // 암호화 체크
-                /*String testEncrypt = Cryptor.encrypt(originalString, secretKey);
-                DatabaseReference mRootRef5 = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef5 = mRootRef5.child("암호문");
-                conditionRef5.setValue(testEncrypt);
-                Log.e("암호문", testEncrypt);*/
 
                 // 이미지 암호화
                 EncryptImg = Cryptor.encrypt(originalString, secretKey);
                 Log.e("암호화된이미지", EncryptImg);
 
-                // 암호화된 이미지 업로드
+
+
+                // 사용자의 이메일 아래에 넣는 코드 (임시로... 추후에 로그인 구현된 후, 다시 작성해야 함)
+                userEamil = "minyounge17";
                 DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef = mRootRef.child("암호화된 이미지6");
-                conditionRef.setValue(EncryptImg);
+                DatabaseReference email = mRootRef.child("User1");
+                email.child("email").setValue(userEamil);
+
+
+
+                // 암호화된 이미지 업로드
+                DatabaseReference conditionRef = mRootRef.child("User1").child("album");
+                conditionRef.child("EncryptImg").setValue(EncryptImg);
+
+
+                // 키 업로드 (임시로.. 나중에는 키관리따로해야함)
+                DatabaseReference key = mRootRef.child("User1").child("album");
+                key.child("key").setValue(secretKey);
+
 
                 // 복호화
+                /*
                 DecryptImg = Cryptor.decrypt(EncryptImg, secretKey);
                 stringToBitmap = StringToBitmap(DecryptImg);
                 iv_bitmap.setImageBitmap(stringToBitmap);
@@ -155,50 +129,7 @@ public class Encrypt_MinyoungActivity2 extends AppCompatActivity {
                 DatabaseReference mRootRef2 = FirebaseDatabase.getInstance().getReference();
                 DatabaseReference conditionRef2 = mRootRef2.child("복호화된 이미지5");
                 conditionRef2.setValue(DecryptImg);
-
-                // 복호화 체크
-                /*String testDecrypt = Cryptor.decrypt(testEncrypt, secretKey);
-                DatabaseReference mRootRef6 = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference conditionRef6 = mRootRef6.child("복호문");
-                conditionRef6.setValue(testDecrypt);
-                Log.e("복호문", testDecrypt);*/
-
-                // DecryptImg = AES256Chiper.Decrypt(EncryptImg, "123456789");
-                // Bitmap decryptBitmap = StringToBitmap(DecryptImg);
-                //  iv_bitmap.setImageBitmap(decryptBitmap);
-
-                // String 압축
-                //String shortEncryptImg = compressString(EncryptImg);
-                //Log.e("String압축", shortEncryptImg);
-
-                // String EncryptImg1;
-                //EncryptImg1 = EncryptImg.substring(0, 2000);
-                // String EncryptImg2 = EncryptImg.substring(2000);
-
-                // Log.e("EncryptImg1", EncryptImg1);
-                //Log.e("EncryptImg2", EncryptImg);
-
-                // 암호화된 이미지 업로드
-               // DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                //DatabaseReference conditionRef = mRootRef.child("암호화된 이미지6");
-                //conditionRef.setValue(EncryptImg);
-
-                //EncryptImg="";
-
-
-
-                // 복호화된 이미지 업로드
-              //  DatabaseReference mRootRef2 = FirebaseDatabase.getInstance().getReference();
-              //  DatabaseReference conditionRef2 = mRootRef2.child("복호화된 이미지5");
-               // conditionRef2.setValue(DecryptImg);
-
-
-                //Bitmap StringToBitmap = StringToBitmap(bitmapToString);
-
-                // iv_bitmap.setImageBitmap(StringToBitmap);
-
-                //Log.e("bitmap변환", bitmapToString);
-
+                 */
 
             } catch (Exception e) {
                 e.printStackTrace();

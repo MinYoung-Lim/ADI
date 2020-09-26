@@ -38,6 +38,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/btn_real_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="실제 업로드"/>
+
     </LinearLayout>
 
     <!--이미지 출력-->

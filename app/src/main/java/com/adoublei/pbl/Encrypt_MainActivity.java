@@ -43,6 +43,7 @@ public class Encrypt_MainActivity extends AppCompatActivity {
     private Button btChoose;
     private Button btUpload;
     private Button btn_min;
+    private Button btn_real_upload;
     private ImageView ivPreview;
 
 
@@ -56,6 +57,7 @@ public class Encrypt_MainActivity extends AppCompatActivity {
         btChoose = (Button) findViewById(R.id.bt_choose);
         btUpload = (Button) findViewById(R.id.bt_upload);
         btn_min = (Button)findViewById(R.id.btn_min);
+        btn_real_upload = (Button)findViewById(R.id.btn_real_upload);
         ivPreview = (ImageView) findViewById(R.id.iv_preview);
 
 
@@ -87,6 +89,14 @@ public class Encrypt_MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //업로드
                 uploadFile();
+            }
+        });
+
+        btn_real_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), UploadMainActivity.class);
+                startActivity(intent);
             }
         });
 

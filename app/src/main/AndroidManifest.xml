@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.adoublei.pbl">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.front.autofocus"  android:required="false"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-    <supports-screens android:resizeable="true"
-        android:smallScreens="true"
-        android:normalScreens="true"
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="false" />
+
+    <supports-screens
+        android:anyDensity="true"
         android:largeScreens="true"
-        android:anyDensity="true" />
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
 
     <application
         android:allowBackup="true"
@@ -23,15 +36,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanActivity7"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name=".UploadMainActivity"></activity>
+        <activity android:name=".CanvasTestActivity" />
+        <activity android:name=".TextRecognitionActivity2" />
+        <activity android:name=".TextRecognitionActivity" />
+        <activity android:name=".LoginTestActivity" />
+        <activity android:name=".CropActivity" />
+        <activity android:name=".ScanActivity9" />
+        <activity android:name=".ScanActivity8" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
+            android:name=".ScanActivity7"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape" />
         <activity android:name=".ScanActivity5" />
         <activity android:name=".ScanActivity4" />
         <activity android:name=".ScanActivity3" />
         <activity android:name=".ScanActivity2" />
-        <activity android:name=".CropImage" />
-        <activity android:name=".ScanActivity" />
         <activity android:name=".Encrypt_MinyoungActivity2" />
         <activity android:name=".Encrypt_MinyoungActivity" />
         <activity android:name=".OpenCV_MainActivity3" />
@@ -43,9 +66,6 @@
         <activity android:name=".ImageEnhanceActivity" />
         <activity android:name=".MLkitActivity2" />
         <activity android:name=".MLkitActivity" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Opencv_MainActivity" /> <!-- optional (needed if default theme has no action bar) -->
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -68,6 +88,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr" />
     </application>
 
 </manifest>

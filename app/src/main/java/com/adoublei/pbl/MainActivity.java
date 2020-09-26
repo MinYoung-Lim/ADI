@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, Encrypt_MainActivity.class);
+                //Intent intent = new Intent(MainActivity.this, LoginTestActivity.class);
                 startActivity(intent);
             }
         });
